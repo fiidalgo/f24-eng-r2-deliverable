@@ -1,18 +1,11 @@
 "use client";
 
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-  DialogClose,
-} from "@/components/ui/dialog";
-import { createBrowserSupabaseClient } from "@/lib/client-utils";
+import { Dialog, DialogClose, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { toast } from "@/components/ui/use-toast";
+import { createBrowserSupabaseClient } from "@/lib/client-utils";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 export default function DeleteSpeciesDialog({ speciesId }: { speciesId: number }) {
   const [open, setOpen] = useState(false);
@@ -54,14 +47,14 @@ export default function DeleteSpeciesDialog({ speciesId }: { speciesId: number }
         </DialogHeader>
         <p>Are you sure you want to delete this species? This action cannot be undone.</p>
 
-        <div className="flex justify-end gap-2 mt-4">
+        <div className="mt-4 flex justify-end gap-2">
           {/* Cancel Button */}
           <DialogClose asChild>
             <Button variant="secondary">Cancel</Button>
           </DialogClose>
 
           {/* Confirm Delete Button */}
-          <Button onClick={handleDelete} variant="destructive">
+          <Button onClick={void handleDelete} variant="destructive">
             Delete
           </Button>
         </div>

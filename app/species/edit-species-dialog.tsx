@@ -1,26 +1,19 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-  DialogClose,
-} from "@/components/ui/dialog";
+import { Dialog, DialogClose, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import type { Database } from "@/lib/schema"; // Import the schema
 import { toast } from "@/components/ui/use-toast";
 import { createBrowserSupabaseClient } from "@/lib/client-utils";
-import { useState, type BaseSyntheticEvent } from "react";
+import type { Database } from "@/lib/schema"; // Import the schema
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
+import { useState, type BaseSyntheticEvent } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 
 // Define a species type using the generated Database type
 type Species = Database["public"]["Tables"]["species"]["Row"];
@@ -28,7 +21,10 @@ type Species = Database["public"]["Tables"]["species"]["Row"];
 // Zod schema to validate the form data
 const speciesSchema = z.object({
   scientific_name: z.string().min(1).trim(),
-  common_name: z.string().nullable().transform((val) => (val === "" ? null : val)),
+  common_name: z
+    .string()
+    .nullable()
+    .transform((val) => (val === "" ? null : val)),
   kingdom: z.enum(["Animalia", "Plantae", "Fungi", "Protista", "Archaea", "Bacteria"]),
   total_population: z.number().int().positive().nullable(),
   description: z.string().nullable(),
@@ -120,7 +116,7 @@ export default function EditSpeciesDialog({ species }: { species: Species }) {
                   <FormItem>
                     <FormLabel>Common Name</FormLabel>
                     <FormControl>
-                      <Input {...field} />
+                      <Input {...field} value={field.value ?? ""} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -160,7 +156,7 @@ export default function EditSpeciesDialog({ species }: { species: Species }) {
                   <FormItem>
                     <FormLabel>Total Population</FormLabel>
                     <FormControl>
-                      <Input {...field} type="number" />
+                      <Input {...field} value={field.value ?? ""} type="number" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -173,7 +169,7 @@ export default function EditSpeciesDialog({ species }: { species: Species }) {
                   <FormItem>
                     <FormLabel>Description</FormLabel>
                     <FormControl>
-                      <Textarea {...field} />
+                      <Textarea {...field} value={field.value ?? ""} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

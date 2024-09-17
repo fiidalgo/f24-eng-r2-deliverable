@@ -20,13 +20,17 @@ export default async function UsersList() {
 
   return (
     <div className="p-4">
-      <h1 className="text-2xl font-bold mb-4">Users List</h1>
+      <h1 className="mb-4 text-2xl font-bold">Users List</h1>
       <div className="grid gap-4">
         {profiles?.map((profile) => (
-          <div key={profile.email} className="p-4 border rounded shadow">
+          <div key={profile.email} className="rounded border p-4 shadow">
             <h2 className="text-xl font-semibold">{profile.display_name}</h2>
-            <p><strong>Email:</strong> {profile.email}</p>
-            <p><strong>Biography:</strong> {profile.biography || "No biography available"}</p>
+            <p>
+              <strong>Email:</strong> {profile.email}
+            </p>
+            <p>
+              <strong>Biography:</strong> {profile.biography ?? "No biography available"}
+            </p>
           </div>
         ))}
       </div>

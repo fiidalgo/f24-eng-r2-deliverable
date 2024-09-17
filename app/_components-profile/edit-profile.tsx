@@ -6,18 +6,25 @@ import { createBrowserSupabaseClient } from "@/lib/client-utils"; // Adjust impo
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/use-toast"; // Optional for user feedback
 
-type Profile = {
+interface Profile {
   id: string;
   display_name: string;
   biography: string;
   email: string;
-};
+}
+
+// Define the shape of the form data
+interface FormData {
+  biography: string;
+}
 
 export default function EditProfile() {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
   const supabase = createBrowserSupabaseClient();
-  const { register, handleSubmit, reset } = useForm();
+
+  // Use the FormData type to tell useForm what structure to expect
+  const { register, handleSubmit, reset } = useForm<FormData>();
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -25,7 +32,12 @@ export default function EditProfile() {
         data: { user },
       } = await supabase.auth.getUser();
 
-      // Fetch the user's profile based on their ID
+      if (!user) {
+        console.error("User is not authenticated");
+        setLoading(false);
+        return;
+      }
+
       const { data, error } = await supabase
         .from("profiles")
         .select("*")
@@ -35,16 +47,21 @@ export default function EditProfile() {
       if (error) {
         console.error("Error fetching profile:", error);
       } else {
-        setProfile(data);
-        reset(data); // Initialize form with existing profile data
+        const updatedProfile = {
+          ...data,
+          biography: data.biography ?? "", // Ensure biography is a string
+        };
+
+        setProfile(updatedProfile);
+        reset(updatedProfile); // Initialize form with existing profile data
       }
       setLoading(false);
     };
 
-    fetchProfile();
+    void fetchProfile();
   }, [supabase, reset]);
 
-  const onSubmit = async (formData: { biography: string }) => {
+  const onSubmit = async (formData: FormData) => {
     if (!profile) return;
 
     const { error } = await supabase
@@ -75,7 +92,7 @@ export default function EditProfile() {
     <div className="p-4">
       <h1 className="text-2xl font-bold mb-4">Edit Profile</h1>
       {profile && (
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={void handleSubmit(onSubmit)}>
           <div className="mb-4">
             <label htmlFor="biography" className="block font-semibold mb-2">
               Biography
