@@ -13,7 +13,7 @@ export default async function SpeciesList() {
   } = await supabase.auth.getSession();
 
   if (!session) {
-    // this is a protected route - only users who are signed in can view this route
+    // only signed in users can access this page
     redirect("/");
   }
 
@@ -30,7 +30,7 @@ export default async function SpeciesList() {
       </div>
       <Separator className="my-4" />
       <div className="flex flex-wrap justify-center">
-        {species?.map((species) => <SpeciesCard key={species.id} species={species} />)}
+        {species?.map((species) => <SpeciesCard key={species.id} species={species} sessionId={sessionId} />)}
       </div>
     </>
   );
